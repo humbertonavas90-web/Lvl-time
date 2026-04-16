@@ -1,0 +1,28 @@
+npm init -y
+npm install puppeteer iohook
+const puppeteer = require('puppeteer');
+const ioHook = require('iohook');
+
+(async () => {
+  // Abrir Chrome (visible o en background)
+  const browser = await puppeteer.launch({
+    headless: false // puedes poner true si no quieres ver la ventana
+  });
+
+  const page = await browser.newPage();
+
+  // Abre la página que quieres controlar
+  await page.goto('https://google.com');
+
+  console.log('Listo. Presiona "|" para enviar "6" a la pestaña.');
+
+  // Detectar tecla "|"
+  ioHook.on('keydown', async (event) => {
+    // Keycode de "|" puede variar según teclado (normalmente 43 o 86)
+    // Mejor detectar por prueba:
+    if (event.rawcode === 220) { // tecla "\" y "|" en muchos teclados
+      console.log('Presionaste | → enviando 6');
+
+      await page.keyboard.press('6');
+    }
+  });
